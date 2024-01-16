@@ -235,3 +235,7 @@ Generated_Code/
 
 #
  
+
+src/WebApi/appsettings.Development.json
+
+src/WebApi/appsettings.json
