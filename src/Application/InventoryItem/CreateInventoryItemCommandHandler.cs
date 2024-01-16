@@ -3,9 +3,9 @@ using MediatR;
 
 namespace GallowSoft.Household.Application.InventoryItem;
 
-public class CreateInventoryItemCommandHandler(IApplicationDbContext context) : IRequestHandler<CreateInventoryItemCommand, InventoryItemDto>
+public class CreateInventoryItemCommandHandler(IApplicationDbContext context) : IRequestHandler<CreateInventoryItemCommand, InventoryItemCreateDto>
 {
-    public async Task<InventoryItemDto> HandleAsync(CreateInventoryItemCommand request, CancellationToken cancellationToken)
+    public async Task<InventoryItemCreateDto> HandleAsync(CreateInventoryItemCommand request, CancellationToken cancellationToken)
     {
         var entity = new Domain.InventoryItem.InventoryItem
         {
@@ -18,14 +18,14 @@ public class CreateInventoryItemCommandHandler(IApplicationDbContext context) : 
         context.InventoryItems.Add(entity);
         await context.SaveChangesAsync(cancellationToken);
 
-        return new InventoryItemDto
+        return new InventoryItemCreateDto
         {
             Name = entity.Name,
             Description = entity.Description,
         };
     }
 
-    public Task<InventoryItemDto> Handle(CreateInventoryItemCommand request, CancellationToken cancellationToken)
+    public Task<InventoryItemCreateDto> Handle(CreateInventoryItemCommand request, CancellationToken cancellationToken)
     {
         return HandleAsync(request, cancellationToken);
     }

@@ -35,4 +35,33 @@ public class ApplicationTests
         contextMock.Verify(c => c.SaveChangesAsync(cancellationToken), Times.Once);
     }
 
+    [Fact]
+    public async Task Handle_ReturnsInventoryItems()
+    {
+        // Arrange
+        var repository = new Mock<IApplicationDbContext>();
+        var handler = new GetInventoryItemsQueryHandler(repository.Object);
+        var query = new GetInventoryItemsQuery();
+        var cancellationToken = new CancellationToken();
+
+        var inventoryItems = new List<InventoryItem>
+        {
+            new() { Id = Guid.NewGuid(), Name = "Item 1", Description = "Description 1", CreatedDate = DateTime.Now, UpdatedDate = DateTime.Now},
+            new() { Id = Guid.NewGuid(), Name = "Item 2", Description = "Description 2", CreatedDate = DateTime.Now, UpdatedDate = DateTime.Now},
+            new() { Id = Guid.NewGuid(), Name = "Item 3", Description = "Description 3", CreatedDate = DateTime.Now, UpdatedDate = DateTime.Now}
+        };
+
+        repository.Setup(r => r.GetInventoryItems(cancellationToken)).ReturnsAsync(inventoryItems);
+
+        // Act
+        var result = await handler.Handle(query, cancellationToken);
+
+        // Assert
+        Assert.Equal(3, result.Count());
+
+        var firstItem = result.First();
+        Assert.Equal("Item 1", firstItem.Name);
+        Assert.Equal("Description 1", firstItem.Description);
+    }
+
 }

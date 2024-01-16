@@ -7,6 +7,8 @@ namespace GallowSoft.Household.Infrastructure.Data;
 public interface IApplicationDbContext
 {
     DbSet<InventoryItem> InventoryItems { get; set; } // This is for the InventoryItems
+
+    Task<List<InventoryItem>> GetInventoryItems(CancellationToken cancellationToken = default);
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
 
@@ -20,7 +22,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     }
     
     public DbSet<InventoryItem> InventoryItems { get; set; }
-    
-    
+
+    public async Task<List<InventoryItem>> GetInventoryItems(CancellationToken cancellationToken = default)
+    {
+        return await InventoryItems.ToListAsync(cancellationToken);
+    }
 }
 
